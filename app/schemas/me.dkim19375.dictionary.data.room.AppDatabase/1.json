@@ -1,0 +1,146 @@
+{
+    "formatVersion": 1,
+    "database": {
+        "version": 1,
+        "identityHash": "27f5d43b746d450df7a9b4c2ca7a605f",
+        "entities": [
+            {
+                "tableName": "definitions",
+                "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `definition` TEXT NOT NULL, `definition_index` INTEGER NOT NULL, `example` TEXT, `parent_meaning` INTEGER)",
+                "fields": [
+                    {
+                        "fieldPath": "id",
+                        "columnName": "id",
+                        "affinity": "INTEGER",
+                        "notNull": false
+                    },
+                    {
+                        "fieldPath": "definition",
+                        "columnName": "definition",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "definitionIndex",
+                        "columnName": "definition_index",
+                        "affinity": "INTEGER",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "example",
+                        "columnName": "example",
+                        "affinity": "TEXT",
+                        "notNull": false
+                    },
+                    {
+                        "fieldPath": "parentMeaning",
+                        "columnName": "parent_meaning",
+                        "affinity": "INTEGER",
+                        "notNull": false
+                    }
+                ],
+                "primaryKey": {
+                    "autoGenerate": true,
+                    "columnNames": [
+                        "id"
+                    ]
+                },
+                "indices": [],
+                "foreignKeys": []
+            },
+            {
+                "tableName": "meanings",
+                "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `word` TEXT NOT NULL, `meaning_index` INTEGER NOT NULL, `part_of_speech` TEXT NOT NULL, `synonyms` TEXT NOT NULL, `antonyms` TEXT NOT NULL)",
+                "fields": [
+                    {
+                        "fieldPath": "id",
+                        "columnName": "id",
+                        "affinity": "INTEGER",
+                        "notNull": false
+                    },
+                    {
+                        "fieldPath": "word",
+                        "columnName": "word",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "meaningIndex",
+                        "columnName": "meaning_index",
+                        "affinity": "INTEGER",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "partOfSpeech",
+                        "columnName": "part_of_speech",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "synonyms",
+                        "columnName": "synonyms",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "antonyms",
+                        "columnName": "antonyms",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    }
+                ],
+                "primaryKey": {
+                    "autoGenerate": true,
+                    "columnNames": [
+                        "id"
+                    ]
+                },
+                "indices": [],
+                "foreignKeys": []
+            },
+            {
+                "tableName": "words",
+                "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`word` TEXT NOT NULL, `phonetics` TEXT NOT NULL, `licenses` TEXT NOT NULL, `sourceUrls` TEXT NOT NULL, PRIMARY KEY(`word`))",
+                "fields": [
+                    {
+                        "fieldPath": "word",
+                        "columnName": "word",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "phonetics",
+                        "columnName": "phonetics",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "licenses",
+                        "columnName": "licenses",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    },
+                    {
+                        "fieldPath": "sourceUrls",
+                        "columnName": "sourceUrls",
+                        "affinity": "TEXT",
+                        "notNull": true
+                    }
+                ],
+                "primaryKey": {
+                    "autoGenerate": false,
+                    "columnNames": [
+                        "word"
+                    ]
+                },
+                "indices": [],
+                "foreignKeys": []
+            }
+        ],
+        "views": [],
+        "setupQueries": [
+            "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+            "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '27f5d43b746d450df7a9b4c2ca7a605f')"
+        ]
+    }
+}
