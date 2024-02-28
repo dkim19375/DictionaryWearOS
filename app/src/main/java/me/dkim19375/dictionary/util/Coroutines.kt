@@ -28,4 +28,4 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import me.dkim19375.dkimcore.delegate.createCoroutineScope
 
-val MAIN_SCOPE: CoroutineScope by createCoroutineScope(Dispatchers.IO)
+val MAIN_SCOPE: CoroutineScope by createCoroutineScope(Dispatchers.Main)

@@ -138,12 +138,14 @@ fun HomeScreen(
                 iconSize = 23.dp,
             ) {
                 savedButtonPressed()
-                coroutineScope.launch {
+                MAIN_SCOPE.launch {
                     runCatching {
                         val savedWords = withContext(Dispatchers.IO) {
                             AppDatabase.getInstance(context).wordDao().getSavedWords()
                         }
-                        savedWordsLoaded(savedWords)
+                        withContext(Dispatchers.Main) {
+                            savedWordsLoaded(savedWords)
+                        }
                     }.exceptionOrNull()?.printStackTrace()
                 }
             }
