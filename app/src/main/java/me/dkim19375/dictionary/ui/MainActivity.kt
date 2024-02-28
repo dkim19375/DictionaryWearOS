@@ -30,13 +30,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -45,8 +43,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.Scaffold
 import androidx.wear.tooling.preview.devices.WearDevices
+import com.google.android.horologist.compose.layout.AppScaffold
+import com.google.android.horologist.compose.layout.ResponsiveTimeText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -102,12 +101,15 @@ fun DictionaryApp() = DictionaryTheme {
             Log.i("BackStackLog", "Backstack: ${routes.joinToString()}")
         }
     }
-    val coroutineScope = rememberCoroutineScope()
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.background),
+    AppScaffold(
+        timeText = {
+            ResponsiveTimeText(
+                timeTextStyle = MaterialTheme.typography.caption3.copy(fontSize = 15.sp)
+            )
+        }
     ) {
+        val coroutineScope = rememberCoroutineScope()
+
         NavHost(
             navController = navController,
             startDestination = HomeScreenRoute.route,
@@ -236,7 +238,7 @@ fun DictionaryApp() = DictionaryTheme {
     }
 }
 
-suspend fun searchForWord(
+private suspend fun searchForWord(
     inputText: String,
     context: Context,
     navController: NavController,

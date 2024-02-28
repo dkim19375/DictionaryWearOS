@@ -24,10 +24,6 @@
 
 package me.dkim19375.dictionary.ui.screen
 
-import android.annotation.SuppressLint
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -37,22 +33,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
-import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.items
-import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
-import androidx.wear.compose.foundation.rememberActiveFocusRequester
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
+import com.google.android.horologist.annotations.ExperimentalHorologistApi
+import com.google.android.horologist.compose.layout.ScalingLazyColumn
+import com.google.android.horologist.compose.layout.ScreenScaffold
+import com.google.android.horologist.compose.layout.rememberColumnState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,21 +53,17 @@ import me.dkim19375.dictionary.data.room.WordSQL
 import me.dkim19375.dictionary.ui.component.AutoSizeText
 import me.dkim19375.dictionary.ui.component.ChipWithEmphasizedText
 import me.dkim19375.dictionary.ui.component.ChipWithHeading
+import me.dkim19375.dictionary.util.MAIN_SCOPE
 import me.dkim19375.dictionary.util.capitalize
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
-@OptIn(ExperimentalWearFoundationApi::class)
+@OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun SavedWordsScreen(
     words: List<String>,
     wordSelected: () -> Unit,
     wordLoaded: (String, WordSQL?) -> Unit,
 ) {
-    val listState = rememberScalingLazyListState(
-        initialCenterItemIndex = 0,
-        initialCenterItemScrollOffset = 115,
-    )
-    val coroutineScope = rememberCoroutineScope()
+    val columnState = rememberColumnState()
     var context = LocalContext.current
     var newWords by remember(words) { mutableStateOf(words) }
     LaunchedEffect(null) {
@@ -86,74 +74,67 @@ fun SavedWordsScreen(
             newWords = updatedWords
         }
     }
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .onRotaryScrollEvent {
-                coroutineScope.launch {
-                    listState.animateScrollBy(it.verticalScrollPixels, tween())
-                }
-                true
-            }
-            .focusRequester(rememberActiveFocusRequester())
-            .focusable(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        state = listState,
-    ) {
-        item(key = "title") {
-            Text(
-                text = "Saved Words",
-                style = MaterialTheme.typography.title2,
-                modifier = Modifier.padding(bottom = 4.dp),
-            )
-        }
-        if (newWords.isNotEmpty()) {
-            items(newWords) { word ->
-                context = LocalContext.current
-                ChipWithEmphasizedText(
-                    modifier = Modifier
-                        .heightIn(max = 42.dp)
-                        .padding(horizontal = 4.dp),
-                    text = word.capitalize(),
-                    customLabel = {
-                        AutoSizeText(
-                            text = word.capitalize(),
-                            style = MaterialTheme.typography.caption1,
-                            maxTextSize = MaterialTheme.typography.caption1.fontSize,
-                            minTextSize = 5.sp,
-                            minTextSizeBeforeNewline = 12.sp,
-                            modifier = Modifier.padding(start = 4.dp, end = 2.dp)
-                        )
-                    }
-                ) {
-                    wordSelected()
-                    coroutineScope.launch {
-                        val sqlData = withContext(Dispatchers.IO) {
-                            AppDatabase.getInstance(context).wordDao().getSavedWordWithData(word)
-                        }
-                        if (sqlData == null) {
-                            withContext(Dispatchers.IO) {
-                                AppDatabase.getInstance(context).wordDao()
-                                    .unSaveWordWithoutUnSavingMeaningsOrDefinitions(word)
-                            }
-                        }
-                        wordLoaded(word, sqlData)
-                    }
-                }
-            }
-            item("info") {
+    ScreenScaffold(scrollState = columnState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            columnState = columnState,
+        ) {
+            item(key = "title") {
                 Text(
-                    text = "All saved words are available offline",
-                    style = MaterialTheme.typography.caption3,
-                    modifier = Modifier.fillMaxWidth(),
+                    text = "Saved Words",
+                    style = MaterialTheme.typography.title2,
+                    modifier = Modifier.padding(bottom = 4.dp),
                 )
             }
-        } else {
-            item("info") {
-                ChipWithHeading(
-                    heading = "Save some words!",
-                    text = "(available offline)",
-                )
+            if (newWords.isNotEmpty()) {
+                items(newWords) { word ->
+                    context = LocalContext.current
+                    ChipWithEmphasizedText(
+                        modifier = Modifier
+                            .heightIn(max = 42.dp)
+                            .padding(horizontal = 4.dp),
+                        text = word.capitalize(),
+                        customLabel = {
+                            AutoSizeText(
+                                text = word.capitalize(),
+                                style = MaterialTheme.typography.caption1,
+                                maxTextSize = MaterialTheme.typography.caption1.fontSize,
+                                minTextSize = 5.sp,
+                                minTextSizeBeforeNewline = 12.sp,
+                                modifier = Modifier.padding(start = 4.dp, end = 2.dp)
+                            )
+                        }
+                    ) {
+                        wordSelected()
+                        MAIN_SCOPE.launch {
+                            val sqlData = withContext(Dispatchers.IO) {
+                                AppDatabase.getInstance(context).wordDao()
+                                    .getSavedWordWithData(word)
+                            }
+                            if (sqlData == null) {
+                                withContext(Dispatchers.IO) {
+                                    AppDatabase.getInstance(context).wordDao()
+                                        .unSaveWordWithoutUnSavingMeaningsOrDefinitions(word)
+                                }
+                            }
+                            wordLoaded(word, sqlData)
+                        }
+                    }
+                }
+                item("info") {
+                    Text(
+                        text = "All saved words are available offline",
+                        style = MaterialTheme.typography.caption3,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            } else {
+                item("info") {
+                    ChipWithHeading(
+                        heading = "Save some words!",
+                        text = "(available offline)",
+                    )
+                }
             }
         }
     }
