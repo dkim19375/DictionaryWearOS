@@ -90,7 +90,7 @@ fun DictionaryTheme(
                 fontFamily = titilliumWebFontFamily,
             ),
             body2 = MaterialTheme.typography.body2.copy(
-                color = Color.LightGray,
+                color = Color(0xFFDEDEDE),
                 fontSize = 12.sp,
                 lineHeight = 14.sp,
                 fontWeight = FontWeight.Normal,
