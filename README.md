@@ -5,10 +5,10 @@ A free and open source dictionary app for Wear OS.
 - Can view:
   - Parts of speech
   - IPA phonetics
-  - Examples usages
+  - Example usages
   - Synonyms
   - Antonyms
-- Supports saving words offline (otherwise, internet connection is required)
+- Supports saving words offline (otherwise, an internet connection is required)
 
 ## Acknowledgements
 - Dictionary API provided by https://dictionaryapi.dev/
