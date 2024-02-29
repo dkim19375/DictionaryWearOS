@@ -35,7 +35,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.itemsIndexed
@@ -88,9 +93,42 @@ fun WordInfoScreen(wordData: WordData, meaning: WordMeaningJsonData) {
                 }
             }
             itemsIndexed(meaning.definitions) { i, definition ->
+                val example = definition.example
                 ChipWithHeading(
                     heading = "Definition ${i + 1}:",
-                    text = definition.definition,
+                    text = AnnotatedString(definition.definition).run {
+                        if (example == null) return@run this
+                        val word = wordData.word
+
+                        var result = this + AnnotatedString(
+                            text = " ",
+                            paragraphStyle = ParagraphStyle(),
+                            spanStyle = SpanStyle(fontSize = 1.sp),
+                        )
+
+                        val otherTextStyle = SpanStyle(color = Color(0xFFAAAAAA))
+                        val wordStyle = SpanStyle(
+                            color = Color(0xFFCCCCCC),
+                            fontWeight = FontWeight.SemiBold,
+                        )
+
+                        // highlight the actual word in the example
+                        var min = 0
+                        while (min != example.length) {
+                            val wordIndex = example.indexOf(word, min, ignoreCase = true).let {
+                                if (it == -1) example.length else it
+                            }
+                            val text = example.substring(min, wordIndex)
+                            min = wordIndex
+                            result += AnnotatedString(text, otherTextStyle)
+                            if (wordIndex != example.length) {
+                                val wordText = example.substring(wordIndex, wordIndex + word.length)
+                                result += AnnotatedString(wordText, wordStyle)
+                                min += word.length
+                            }
+                        }
+                        result
+                    },
                 )
             }
             if (meaning.synonyms.isNotEmpty()) {

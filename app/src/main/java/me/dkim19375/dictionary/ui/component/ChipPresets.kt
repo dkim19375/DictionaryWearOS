@@ -49,6 +49,7 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.ChipColors
@@ -66,6 +67,19 @@ fun ChipWithHeading(
     modifier: Modifier = Modifier,
     heading: String,
     text: String,
+    onClick: () -> Unit = {},
+) = ChipWithHeading(
+    modifier = modifier,
+    heading = heading,
+    text = AnnotatedString(text),
+    onClick = onClick,
+)
+
+@Composable
+fun ChipWithHeading(
+    modifier: Modifier = Modifier,
+    heading: String,
+    text: AnnotatedString,
     onClick: () -> Unit = {},
 ) = TemplateChip(
     modifier = modifier,
