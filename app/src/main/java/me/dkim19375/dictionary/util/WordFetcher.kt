@@ -42,6 +42,7 @@ object WordFetcher {
 
     private val httpClient = OkHttpClient.Builder().apply {
         connectTimeout(Duration.ofSeconds(5))
+        callTimeout(Duration.ofSeconds(15))
     }.build()
 
     suspend fun fetchWord(word: String, context: Context? = null): WordData? {
