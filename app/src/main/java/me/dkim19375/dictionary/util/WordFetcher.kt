@@ -27,13 +27,17 @@ package me.dkim19375.dictionary.util
 import android.content.Context
 import android.util.Log
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withTimeout
 import me.dkim19375.dictionary.data.WordData
 import me.dkim19375.dictionary.data.WordJsonData
 import me.dkim19375.dictionary.data.room.AppDatabase
+import me.dkim19375.dkimcore.extension.toURL
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 object WordFetcher {
     private const val API_URL = "https://api.dictionaryapi.dev/api/v2/entries/en/%s"
@@ -45,27 +49,30 @@ object WordFetcher {
         callTimeout(Duration.ofSeconds(15))
     }.build()
 
-    suspend fun fetchWord(word: String, context: Context? = null): WordData? {
-        if (word.trim() != word) return fetchWord(word.trim())
+    suspend fun fetchWord(word: String, context: Context? = null): WordData? = coroutineScope {
+        if (word.trim() != word) return@coroutineScope fetchWord(word.trim())
 
         Log.i("idk", "fetching $word")
-        val jsonText = httpClient.newCall(
-            Request.Builder().url(API_URL.format(word)).build()
-        ).await().also {
-            Log.i("idk", "Awaited response, is successful: ${it.isSuccessful}")
-        }.takeIf(Response::isSuccessful)?.body?.string() ?: return null
+        val jsonText = withTimeout(15.seconds) {
+            Log.i("idk", "Awaiting response")
+            httpClient.newCall(
+                Request.Builder().url(API_URL.format(word)).build()
+            ).await().also {
+                Log.i("idk", "Awaited response, is successful: ${it.isSuccessful}")
+            }.takeIf(Response::isSuccessful)?.body?.string()
+        } ?: return@coroutineScope null
         Log.i("idk", "json: $jsonText")
         val jsonData = runCatching {
             gson.fromJson(jsonText, Array<WordJsonData>::class.java)
         }.getOrElse {
             Log.e("idk", "Failed to parse json", it)
-            return null
+            return@coroutineScope null
         }.ifEmpty {
             Log.e("idk", "Empty json")
-            return null
+            return@coroutineScope null
         }
         Log.i("idk", "jsonData: $jsonData")
-        return WordData(
+        WordData(
             word = jsonData[0].word,
             phonetics = jsonData.mapNotNull(WordJsonData::phonetic).distinct(),
             meanings = jsonData.flatMap(WordJsonData::meanings)
