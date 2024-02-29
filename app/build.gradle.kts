@@ -91,7 +91,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.work:work-runtime:2.9.0")
     implementation("io.github.dkim19375:dkimcore:1.5.0")
-    implementation("com.google.android.horologist:horologist-compose-layout:0.6.2")
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.3")
     implementation("com.google.android.horologist:horologist-compose-material:0.6.2")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
