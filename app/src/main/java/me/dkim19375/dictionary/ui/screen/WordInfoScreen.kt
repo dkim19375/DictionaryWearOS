@@ -177,10 +177,7 @@ fun WordInfoScreen(wordData: WordData, meaning: WordMeaningJsonData) {
                         isSaved = newIsSaved
                     }
                 }
-                ToggleSavedChip(
-                    wordData = wordData,
-                    isSaved = { isSaved }
-                ) { isSaved = it }
+                ToggleSavedChip(wordData = wordData, isSaved = { isSaved }) { isSaved = it }
             }
             item("credits") {
                 Text(
