@@ -1,8 +1,6 @@
 # Dictionary
 A free and open source dictionary app for Wear OS.
 
-Tested on Galaxy Watch 5.
-
 ## Features
 - Can view:
   - Parts of speech
