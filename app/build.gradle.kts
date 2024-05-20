@@ -82,7 +82,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.7.0-beta01")
     implementation("androidx.wear:wear-tooling-preview:1.0.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.code.gson:gson:2.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.6.3")
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
     implementation("com.squareup.okhttp3:okhttp")
