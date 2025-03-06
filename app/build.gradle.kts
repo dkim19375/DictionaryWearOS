@@ -92,7 +92,7 @@ dependencies {
     implementation("androidx.work:work-runtime:2.9.1")
     implementation("io.github.dkim19375:dkimcore:1.5.0")
     implementation("com.google.android.horologist:horologist-compose-layout:0.6.5")
-    implementation("com.google.android.horologist:horologist-compose-material:0.6.5")
+    implementation("com.google.android.horologist:horologist-compose-material:0.6.23")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.08.00"))
