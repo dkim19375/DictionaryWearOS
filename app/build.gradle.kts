@@ -88,7 +88,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("androidx.wear:wear-input:1.2.0-alpha02")
     implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-ktx:2.7.0")
     implementation("androidx.work:work-runtime:2.9.1")
     implementation("io.github.dkim19375:dkimcore:1.5.0")
     implementation("com.google.android.horologist:horologist-compose-layout:0.6.5")
